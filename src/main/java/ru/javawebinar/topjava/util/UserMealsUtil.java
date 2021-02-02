@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
-import java.security.cert.CollectionCertStoreParameters;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,20 +27,14 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        System.out.println("Standart:");
-
         List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(22, 0), 2000);
         mealsTo.forEach(System.out::println);
 
-        System.out.println("\nOneCycle:");
-
-        List<UserMealWithExcess> mealsToOneCycle = filteredByOneCycle(meals, LocalTime.of(7, 0), LocalTime.of(22, 0), 2000);
+        List<UserMealWithExcess> mealsToOneCycle = filteredByOneCycleRecursed(meals, LocalTime.of(7, 0), LocalTime.of(22, 0), 2000);
         mealsToOneCycle.forEach(System.out::println);
 
-        System.out.println("\nStream:");
         System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(22, 0), 2000));
 
-        System.out.println("\noneStream:");
         System.out.println(filteredByOneStream(meals, LocalTime.of(7, 0), LocalTime.of(22, 0), 2000));
     }
 
@@ -59,19 +52,19 @@ public class UserMealsUtil {
         return result;
     }
 
-    public static List<UserMealWithExcess> filteredByOneCycle(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExcess> filteredByOneCycleRecursed(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> map = new HashMap<>();
         List<UserMealWithExcess> result = new LinkedList<>();
         if (meals != null && !meals.isEmpty()) {
-            recursOneCycle(meals, map, result, 0, startTime, endTime, caloriesPerDay);
+            recurse(meals, map, result, 0, startTime, endTime, caloriesPerDay);
         }
         return result;
     }
 
-    public static void recursOneCycle(List<UserMeal> meals, Map<LocalDate, Integer> map, List<UserMealWithExcess> result, int index, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static void recurse(List<UserMeal> meals, Map<LocalDate, Integer> map, List<UserMealWithExcess> result, int index, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         UserMeal currentUserMeal = meals.get(index);
         map.merge(currentUserMeal.getDate(), currentUserMeal.getCalories(), Integer::sum);
-        if(index < meals.size() - 1) recursOneCycle(meals, map, result, index+1, startTime, endTime, caloriesPerDay);
+        if(index < meals.size() - 1) recurse(meals, map, result, index+1, startTime, endTime, caloriesPerDay);
         if(TimeUtil.isBetweenHalfOpen(currentUserMeal.getTime(), startTime, endTime)) {
             boolean excess = map.get(currentUserMeal.getDate()) > caloriesPerDay;
             UserMealWithExcess userMealWithExcess = new UserMealWithExcess(currentUserMeal.getDateTime(), currentUserMeal.getDescription(), currentUserMeal.getCalories(), excess);
