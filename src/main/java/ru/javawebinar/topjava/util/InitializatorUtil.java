@@ -4,11 +4,13 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
 public class InitializatorUtil {
-    static List<Meal> meals = Arrays.asList(
+    public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YYYY-mm-dd hh:mm");
+    public static List<Meal> meals = Arrays.asList(
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
@@ -17,5 +19,5 @@ public class InitializatorUtil {
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
     );
-    static int maxCalories = 2000;
+    public static int maxCalories = 2000;
 }
