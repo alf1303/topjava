@@ -4,7 +4,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.InitializatorUtil;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,29 +29,23 @@ public class MealRepositoryMemoryImpl implements MealRepository{
     }
 
     @Override
-    public List<Meal> getAllMeals() {
+    public Collection<Meal> getAll() {
         return new ArrayList<>(meals.values());
     }
 
     @Override
-    public Meal deleteMeal(int id) {
-        return meals.remove(id);
+    public void delete(int id) {
+        meals.remove(id);
     }
 
     @Override
-    public void updateMeal(Meal meal) {
-        meals.put(meal.getId(), meal);
+    public Meal save(Meal meal) {
+        if(meal.getId() == 0) meal.setId(getNextId());
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
-    public void addMeal(Meal meal) {
-        int mealId = getNextId();
-        meal.setId(mealId);
-        meals.put(mealId, meal);
-    }
-
-    @Override
-    public Meal getById(int id) {
+    public Meal get(int id) {
         return meals.get(id);
     }
 

@@ -44,11 +44,7 @@ public class MealServlet  extends HttpServlet {
 
         Meal meal = new Meal(dateTime, description, calories);
         meal.setId(mealId);
-        if(mealId == 0) {
-            mealRepository.addMeal(meal);
-        } else {
-            mealRepository.updateMeal(meal);
-        }
+        mealRepository.save(meal);
         resp.sendRedirect("meals");
     }
 
@@ -79,7 +75,7 @@ public class MealServlet  extends HttpServlet {
 
     private void editMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int mealId = Integer.parseInt(req.getParameter("id"));
-        Meal meal = mealRepository.getById(mealId);
+        Meal meal = mealRepository.get(mealId);
         req.setAttribute("meal", meal);
         req.getRequestDispatcher("edit.jsp").forward(req, resp);
     }
@@ -88,12 +84,12 @@ public class MealServlet  extends HttpServlet {
     private void deleteMeal(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String mealId = req.getParameter("id");
         int id = Integer.parseInt(mealId);
-        mealRepository.deleteMeal(id);
+        mealRepository.delete(id);
         resp.sendRedirect("meals");
     }
 
     private void viewList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<MealTo> mealsToList = MealsUtil.filteredByStreams(mealRepository.getAllMeals(), LocalTime.MIN, LocalTime.MAX, InitializatorUtil.maxCalories);
+        List<MealTo> mealsToList = MealsUtil.filteredByStreams(mealRepository.getAll(), LocalTime.MIN, LocalTime.MAX, InitializatorUtil.maxCalories);
         req.setAttribute("mealsToList", mealsToList);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
