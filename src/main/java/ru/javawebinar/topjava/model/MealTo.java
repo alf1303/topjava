@@ -33,6 +33,10 @@ public class MealTo {
                 '}';
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getFormattedDateTime() {
         return dateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd hh:mm"));
     }

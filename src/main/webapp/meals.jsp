@@ -14,6 +14,7 @@
 <h3><a href="index.html">Home</a> </h3>
 <hr>
 <h2>Meals</h2>
+<h3><a href="meals?action=addMeal">Add meal</a> </h3>
 <table border="1"; style="border-collapse: collapse; padding: 8px">
     <tr>
         <th style="font-weight: bold">Date</th>
@@ -33,8 +34,8 @@
             <td>
                 <c:out value="${meal.getCalories()}"/>
             </td>
-            <td></td>
-            <td></td>
+            <td><a href="meals?action=edit&id=<c:out value='${meal.getId()}'/>">Edit</a> </td>
+            <td><a href="meals?action=delete&id=<c:out value='${meal.id}' />">Delete</a> </td>
         </tr>
     </c:forEach>
 </table>

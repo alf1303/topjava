@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.InitializatorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealRepositoryMemoryImpl implements MealRepository{
-    private static Map<Integer, Meal> meals = new ConcurrentHashMap<>();
-    private static AtomicInteger id = new AtomicInteger(0);
+    private static MealRepositoryMemoryImpl instance;
+    private static final AtomicInteger idGenerator = new AtomicInteger(0);
+    private static final Map<Integer, Meal> meals = new ConcurrentHashMap<>();;
+
+    private MealRepositoryMemoryImpl() {
+        InitializatorUtil.meals.forEach(m -> {
+            m.setId(getNextId());
+            meals.put(m.getId(), m);
+        });
+    }
+
+    public static synchronized MealRepositoryMemoryImpl getInstance() {
+        if(instance == null) {
+            instance = new MealRepositoryMemoryImpl();
+        }
+        return instance;
+    }
+
     @Override
     public List<Meal> getAllMeals() {
         return new ArrayList<>(meals.values());
@@ -38,7 +55,7 @@ public class MealRepositoryMemoryImpl implements MealRepository{
         return meals.get(id);
     }
 
-    private int getNextId() {
-        return id.incrementAndGet();
+    private static int getNextId() {
+        return idGenerator.incrementAndGet();
     }
 }
